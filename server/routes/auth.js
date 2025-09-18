@@ -12,8 +12,10 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
+
   try {
     const client = await pool.connect();
+
     // Check if user already exists
     const existingUser = await client.query(
       'SELECT id FROM users WHERE email = $1',
