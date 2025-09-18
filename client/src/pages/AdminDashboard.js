@@ -387,7 +387,9 @@ const AdminDashboard = () => {
           <Route path="/" element={<AdminStats />} />
           <Route path="/products" element={<ProductManagement />} />
           <Route path="/orders" element={<div>Orders Management (Coming Soon)</div>} />
+          {'}'}
           <Route path="/users" element={<div>Users Management (Coming Soon)</div>} />
+          {'}'}
         </Routes>
       </div>
     </div>
