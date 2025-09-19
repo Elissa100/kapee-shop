@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const useStore = create((set, get) => ({
   // Auth state
@@ -40,8 +41,12 @@ const useStore = create((set, get) => ({
   register: async (userData) => {
     try {
       const response = await axios.post('/api/auth/register', userData);
+      // Store email for potential resend verification
+      localStorage.setItem('pendingVerificationEmail', userData.email);
+      toast.success(response.data.message);
       return { success: true, message: response.data.message };
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Registration failed');
       return {
         success: false,
         message: error.response?.data?.message || 'Registration failed'
@@ -51,6 +56,7 @@ const useStore = create((set, get) => ({
   
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('pendingVerificationEmail');
     delete axios.defaults.headers.common['Authorization'];
     
     set({

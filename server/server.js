@@ -6,6 +6,10 @@ const passport = require('passport');
 const session = require('express-session');
 require('dotenv').config();
 
+// Log environment variables for debugging
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
+console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Not set');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
 // Import routes
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
