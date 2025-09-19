@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { toast } from 'react-toastify';
 import useStore from '../store/useStore';
 
 const Register = () => {
@@ -13,8 +14,6 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const { register } = useStore();
   const navigate = useNavigate();
@@ -22,11 +21,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       setLoading(false);
       return;
     }
@@ -34,19 +31,16 @@ const Register = () => {
     const result = await register(formData);
 
     if (result.success) {
-      setSuccess(result.message);
       setTimeout(() => {
         navigate('/verify-email');
       }, 2000);
-    } else {
-      setError(result.message);
     }
 
     setLoading(false);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = '/api/auth/google';
   };
 
   return (
@@ -70,17 +64,6 @@ const Register = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
-          )}
-
-          {success && (
-            <div className="bg-green-50 border border-green-200 rounded-md p-4">
-              <p className="text-green-600 text-sm">{success}</p>
-            </div>
-          )}
 
           <div className="space-y-4">
             <div>

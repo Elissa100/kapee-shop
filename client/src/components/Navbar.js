@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Menu, X, LogOut, Settings } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 import useStore from '../store/useStore';
 
 const Navbar = () => {
@@ -43,6 +44,8 @@ const Navbar = () => {
               Shop
             </Link>
             
+            <ThemeToggle />
+            
             <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors">
               <ShoppingCart className="h-6 w-6" />
               {cartItemCount > 0 && (
@@ -71,6 +74,14 @@ const Navbar = () => {
                     >
                       <User className="h-4 w-4 mr-2" />
                       Profile
+                    </Link>
+                    <Link
+                      to="/dashboard"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Dashboard
                     </Link>
                     <Link
                       to="/orders"
@@ -165,6 +176,13 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   Profile
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Dashboard
                 </Link>
                 <Link
                   to="/orders"

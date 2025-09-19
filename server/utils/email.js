@@ -14,7 +14,6 @@ const transporter = nodemailer.createTransport({
 // Send verification email
 const sendVerificationEmail = async (email, name, token) => {
   const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
-  const sixDigitCode = token.substring(0, 6).toUpperCase();
 
   const mailOptions = {
     from: `"Kapee Team" <${process.env.MAIL_USER}>`,
@@ -30,31 +29,23 @@ const sendVerificationEmail = async (email, name, token) => {
           <h2 style="color: #333; margin-bottom: 20px;">Hi ${name},</h2>
           
           <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            Thank you for signing up with Kapee! To complete your registration, please verify your email address using one of the methods below:
+            Thank you for signing up with Kapee! To complete your registration, please verify your email address using your verification code:
           </p>
           
           <div style="background: white; border-radius: 8px; padding: 30px; margin: 30px 0; border: 1px solid #e5e7eb;">
-            <h3 style="color: #333; margin-bottom: 20px;">Method 1: Click the Verify Button</h3>
-            <div style="text-align: center; margin-bottom: 30px;">
-              <a href="${verificationUrl}" 
-                 style="background: #3B82F6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
-                Verify Email Address
-              </a>
-            </div>
-            
-            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-            
-            <h3 style="color: #333; margin-bottom: 20px;">Method 2: Enter Verification Code</h3>
-            <p style="color: #666; margin-bottom: 10px;">Use this 6-digit code in the app:</p>
+            <h3 style="color: #333; margin-bottom: 20px; text-align: center;">Your Verification Code</h3>
             <div style="text-align: center; margin: 20px 0;">
               <span style="background: #f3f4f6; padding: 15px 25px; font-size: 24px; font-weight: bold; letter-spacing: 3px; border-radius: 6px; display: inline-block; color: #333;">
-                ${sixDigitCode}
+                ${token}
               </span>
             </div>
+            <p style="color: #666; text-align: center; margin-top: 20px;">
+              This code will expire in 5 minutes.
+            </p>
           </div>
           
-          <p style="color: #666; font-size: 14px; margin-top: 30px;">
-            This verification link and code will expire in 24 hours. If you didn't create an account with Kapee, please ignore this email.
+          <p style="color: #666; font-size: 14px; margin-top: 30px; text-align: center;">
+            If you didn't create an account with Kapee, please ignore this email.
           </p>
           
           <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #e5e7eb; text-align: center;">

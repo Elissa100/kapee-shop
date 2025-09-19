@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { toast } from 'react-toastify';
 import useStore from '../store/useStore';
 
 const Login = () => {
@@ -10,29 +11,40 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const { login } = useStore();
   const navigate = useNavigate();
 
+  // Check for Google OAuth success
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const success = urlParams.get('success');
+    
+    if (token && success) {
+      localStorage.setItem('token', token);
+      toast.success('Successfully logged in with Google!');
+      navigate('/dashboard');
+    }
+  }, [navigate]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     const result = await login(formData);
 
     if (result.success) {
-      navigate('/');
+      toast.success('Login successful!');
+      navigate('/dashboard');
     } else {
-      setError(result.message);
+      toast.error(result.message);
     }
 
     setLoading(false);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = '/api/auth/google';
   };
 
   return (
@@ -56,11 +68,6 @@ const Login = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
-          )}
 
           <div className="space-y-4">
             <div>

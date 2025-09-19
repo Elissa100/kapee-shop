@@ -9,6 +9,10 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Generate 6-digit verification code
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 // Register
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
@@ -41,8 +45,8 @@ router.post('/register', async (req, res) => {
     const user = newUser.rows[0];
 
     // Generate verification token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const token = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
     await client.query(
       'INSERT INTO email_tokens (user_id, token, type, expires_at) VALUES ($1, $2, $3, $4)',
@@ -55,7 +59,7 @@ router.post('/register', async (req, res) => {
     try {
       await sendVerificationEmail(email, name, token);
       res.status(201).json({ 
-        message: 'Registration successful. Please check your email to verify your account.',
+        message: 'Registration successful! Please check your email for a 6-digit verification code.',
         userId: user.id 
       });
     } catch (emailError) {
@@ -259,8 +263,8 @@ router.post('/resend-verification', async (req, res) => {
     }
 
     // Generate new verification token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const token = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
     // Delete old tokens
     await client.query(
@@ -279,7 +283,7 @@ router.post('/resend-verification', async (req, res) => {
     // Send verification email
     await sendVerificationEmail(userData.email, userData.name, token);
 
-    res.json({ message: 'Verification email sent successfully' });
+    res.json({ message: 'New verification code sent to your email' });
 
   } catch (error) {
     console.error('Resend verification error:', error);
@@ -307,7 +311,7 @@ router.get('/google/callback',
     );
 
     // Redirect to frontend with token
-    res.redirect(`${process.env.CLIENT_URL}/login?token=${token}&success=true`);
+    res.redirect(`${process.env.CLIENT_URL}/dashboard?token=${token}&success=true`);
   }
 );
 
